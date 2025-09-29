@@ -1,0 +1,53 @@
+IN python 
+1 if condition statement
+2 while condition statement
+3 Case condition statement 
+
+condition statement are not written alone 
+for loop or range  with if condition
+for loop with while condition
+for loop with case condition 
+
+If statement
+condition statement can be written in mulitple way 
+1 one line coding 
+2 dealing with numbers
+3 dealing with text data 
+
+a = 10
+print("even number") if a % 2 == 0 else print ("odd number")
+
+
+if a % 2 == 0:
+    print("even number")
+else:
+    print("odd number")
+
+
+a = 10
+b = 5
+
+ if a > b:
+    print("A is the greatest number")
+
+
+if a > b:
+    print("A is the greatest number")
+else:
+    print("B is greater than A")
+
+if a > b:
+    print("A is the greatest number")
+elif b > a :
+    print("B is greater than A")
+else:
+    print("Both A and B are equal ")
+
+  
+
+
+
+
+
+
+

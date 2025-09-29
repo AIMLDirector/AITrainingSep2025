@@ -1,0 +1,25 @@
+python has the following Data types
+Text data types:  string
+Numerical Data types: int, float, complex- both numbers and Text
+Sequencial Data types:  list, tuples, range
+Mapping data type or key value data types : Dictionary 
+Set data types : Static data 
+boolen data types: yes or no, 0 or 1 
+binary data types :  bits, binary , bytes, memory address , asyncionus I/O   
+
+int, float
+string
+list,range
+boolen 
+
+a = 1
+b = 1.5
+c = "hi"
+d = 1jkl
+e = []  # list
+f = ()   # tuples
+g = {}  # Set
+h = {key: value } # Dictionary
+x = True or False # boolean 
+
+

@@ -1,0 +1,11 @@
+json and yaml are mainly to deal with text data 
+json and yaml are to create a structured data format
+java - output(text) -- loading the data the format will change ( window , mac, linux )
+java - output(json or yaml ) - unified data format ( window, mac, linux ) -- python 
+
+Application logs -- json(log, monitoring , data manupulation /yaml( coding in devops)  
+
+
+{
+
+}
