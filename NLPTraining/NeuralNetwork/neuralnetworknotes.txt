@@ -105,7 +105,6 @@ Input Layer: The starting point that receives the raw data. Each neuron in this 
 corresponds to a feature in the input dataset.
 Hidden Layers: One or more layers between the input and output layers where the majority
 of the computation takes place. Each hidden neuron performs a weighted sum of its inputs, 
-
 adds a bias, and passes the result through an activation function.
 Output Layer: The final layer that produces the network's prediction. The number of neurons 
 in this layer corresponds to the number of outputs required for the task. 
