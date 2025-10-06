@@ -37,11 +37,16 @@ model = keras.Sequential([
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
+#QA test engineer: 
+
+#ADAM - Text data( NLP, RNN, LLM)  - Fast  - Weight and bias 
+#SGD  - CNN, simple machine learning models  - Slow    
+
 # Train
 model.fit(X, labels, epochs=5, verbose=1)
 
 # Real-time test
-new_email = ["Urgent: Update your bank details immediately!"]
+new_email = ["Urgent: you win a prize please register with your mobile number "]
 X_new = tokenizer.texts_to_sequences(new_email)
 X_new = keras.preprocessing.sequence.pad_sequences(X_new, maxlen=50)
 print("Spam probability:", model.predict(X_new)[0][0])
