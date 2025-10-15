@@ -1,0 +1,4 @@
+    #python ollamaloganalyzer.py samplelog.log --message "Explain any errors and how to resolve them."
+    #python ollamaloganalyzer.py queryfile --message "Please suggest performance optimizations and rewrite the query if needed"
+
+    2. python ollamaloganalyzer.py samplelog.log "Analyze these pipeline logs and identify possible causes of failure as well as recommended fixes."

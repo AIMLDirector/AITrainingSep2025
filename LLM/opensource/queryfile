@@ -1,0 +1,1 @@
+SELECT customer_id, COUNT(*) FROM transactions WHERE status = 'completed' GROUP BY customer_id ORDER BY COUNT(*) DESC LIMIT 10;
