@@ -5,12 +5,9 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.messages import HumanMessage
-from langchain_core.runnables import RunnablePassthrough, RunnableSequence
 from langchain_classic.chains import RetrievalQA
 from langchain.tools import tool
-from bs4 import BeautifulSoup
-import requests
+from tavily import TavilyClient # Import the official SDK
 import os
 import json
 from dotenv import load_dotenv
@@ -20,13 +17,13 @@ from dotenv import load_dotenv
 # ===============================
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
-travily_api_key = os.getenv("TRAVILY_API_KEY")
+travily_api_key = os.getenv("TAVILY_API_KEY")  
+print(f"travily_api_key: {travily_api_key}")
+print(f"openai_api_key: {openai_api_key}")
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.4, api_key=openai_api_key)
 
-# ===============================
-# 🧠 Tool 1: Local Document Search
-# ===============================
+
 @tool("local_doc_search")
 def local_doc_search(query: str, directory: str = "./data") -> str:
     """Search for answers in local PDF or TXT documents within the given directory."""
@@ -53,53 +50,45 @@ def local_doc_search(query: str, directory: str = "./data") -> str:
         retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
         qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
 
-        answer = qa.run(query)
+        answer = qa.invoke(query)
         return f"Local Search Result:\n{answer}"
     except Exception as e:
         return f"Error in local search: {str(e)}"
 
-# ===============================
-# 🌍 Tool 2: Travily Web Search
-# ===============================
+
 @tool("travily_search")
 def travily_search(query: str) -> str:
-    """Search for travel-related content on the Travily website."""
+    """Search for travel-related content on the Travily website using the official SDK."""
     try:
-        url = "https://api.travily.com/v1/search"
-        headers = {
-            "Authorization": f"Bearer {travily_api_key}",  # or "x-api-key" if Travily uses that format
-            "Content-Type": "application/json",
-        }
-        params = {"q": query, "limit": 5}
-        response = requests.get(url, headers=headers, params=params, timeout=10)
-        response.raise_for_status()
+        if not travily_api_key:
+            return "Travily API key not found in environment variables."
 
-        data = response.json()
+      
+        tavily_client = TavilyClient() 
 
-        if not data.get("results"):
+        # Use the SDK's search method
+        response = tavily_client.search(query=query, max_results=5) #
+
+        if not response.get("results"):
             return f"No results found for '{query}'."
 
         results = []
-        for item in data["results"]:
+        for item in response["results"]:
             title = item.get("title", "Untitled")
-            desc = item.get("description", "No description.")
+            # The SDK response uses 'content' for the snippet, not 'description'
+            desc = item.get("content", "No description.")
             results.append(f"🔹 {title}: {desc}")
 
         return "Travily API Search Results:\n" + "\n".join(results)
 
-    except requests.exceptions.HTTPError as e:
-        return f"HTTP Error: {e.response.status_code} - {e.response.text}"
     except Exception as e:
-        return f"Error searching Travily API: {str(e)}"
+        # The SDK raises specific errors (e.g., InvalidAPIKeyError, UsageLimitExceededError)
+        return f"Error searching Travily API with SDK: {str(e)}"
 
-# ===============================
-# 🔎 Tool 3: General Web Search
-# ===============================
+
 web_search = DuckDuckGoSearchRun(name="web_search")
 
-# ===============================
-# 🤖 Create Agent (LangChain 1.x)
-# ===============================
+
 tools = [local_doc_search, travily_search, web_search]
 
 prompt = ChatPromptTemplate.from_messages([
@@ -115,9 +104,6 @@ agent = create_agent(
 
 query = "Investigate Kafka replication log. Search local logs, Travily, and the web for related insights."
 response = agent.invoke({"messages": [{"role": "user", "content": query}]})
-# print(response)
-
-
 
 last_message = response['messages'][-1]
 
